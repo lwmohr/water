@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
+		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script>
+		<!--
+		<script type='text/javascript' src='../plugins/savingsestimator/js/underscore.js'></script>
+		<script type='text/javascript' src='../plugins/savingsestimator/js/backbone.js'></script>
+		-->
+		<script>
+			$(document).ready(function(){
+				$("button").click(function(){
+					var id = $(this).attr("id");
+					$.ajax({
+						url:"http://www.usbr.gov/gp-bin/arcread.pl?st=CANE&by=2011&bm=6&bd=9&ey=2012&em=6&ed=9&pa=FB&callback=jsonpGlorp",
+						data: {id: id},
+						datatype:"jsonp",
+						jsonp: "callback",
+						jsonpCallback: "jsonpGlorp"
+					});
+				});
+			});
+			function jsonpGlorp(rtndata) {
+			// Get the id from the returned JSON string and use it to reference the target jQuery object.
+				var myid = "#"+rtndata.id;
+		$("div").html("chuck");
+			}
+</script>
+	</head>
+	<body>
+		
+<div><p>stuff</p></div>
+<button>Change Content</button>
+	</body>
+</html>
