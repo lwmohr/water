@@ -1,30 +1,52 @@
 <!DOCTYPE html>
 <html>
 	<head>
-		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
+<!--		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
 		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script>
+		-->
+  <script src="http://code.jquery.com/jquery-latest.js"></script>
 		<!--
 		<script type='text/javascript' src='../plugins/savingsestimator/js/underscore.js'></script>
 		<script type='text/javascript' src='../plugins/savingsestimator/js/backbone.js'></script>
 		-->
 		<script>
+			var mysite = "AGR";
 			$(document).ready(function(){
+							//alert("good");
 				$("button").click(function(){
-					var id = $(this).attr("id");
-					$.ajax({
-						url:"http://www.usbr.gov/gp-bin/arcread.pl?st=CANE&by=2011&bm=6&bd=9&ey=2012&em=6&ed=9&pa=FB&callback=jsonpGlorp",
-						data: {id: id},
-						datatype:"jsonp",
-						jsonp: "callback",
-						jsonpCallback: "jsonpGlorp"
+					//proxy = 'ba-simple-proxy.php';
+					//url = 'http://www.usbr.gov/gp-bin/arcread.pl?st=CANE&by=2011&bm=6&bd=9&ey=2012&em=6&ed=9&pa=FB&json=1';
+					//myurl = proxy + '?url=' + encodeURIComponent(url);
+						//	alert(myurl);
+					//myurl = 'http://www.usbr.gov/gp-bin/arcread.pl?st=CANE&by=2012&bm=10&bd=7&ey=2012&em=10&ed=9&pa=FB&json=1';
+					//myurl = 'http://www.usbr.gov/gp-bin/arcread.pl?st=AGR&by=2011&bm=1&bd=1&ey=2011&em=1&ed=3&pa=FB&jsonp=parseResponse';
+					myurl = 'http://www.usbr.gov/gp-bin/arcread.pl?jsonp=?';
+	//myurl = "http://www.usbr.gov/gp-bin/arcread.pl?st=AGR&by=2011&bm=9&bd=29&ey=2011&em=10&ed=3&pa=FB&jsonp=?";
+					//myurl = 'http://www.usbr.gov/gp-bin/webarccsvt.pl?st=AGR&by=2011&bm=9&bd=29&ey=2011&em=10&ed=3&pa=FB&jsonp=parseResponse';
+					$.getJSON(myurl,
+						{
+							st : mysite,
+							by : "2011",
+							bm : "1",
+							bd : "31",
+							ey : "2011",
+							em : "2",
+							ed : "2",
+							pa : "FB"
+						},
+						
+						function (data) {
+							// Get the id from the returned JSON string and use it to reference the target jQuery object.
+							//var myid = "#"+rtndata.id;
+							//obj = JSON.parse(data);
+							alert("stuff");
+							alert(data);
+							alert(data.AGR);
+							alert(data.eval(mysite)[0].FB);
+							$("div").html(data.AGR[1].FB);
+						});
 					});
 				});
-			});
-			function jsonpGlorp(rtndata) {
-			// Get the id from the returned JSON string and use it to reference the target jQuery object.
-				var myid = "#"+rtndata.id;
-		$("div").html("chuck");
-			}
 </script>
 	</head>
 	<body>
