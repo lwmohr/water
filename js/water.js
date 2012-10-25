@@ -2,6 +2,8 @@
   var elevationArray = new Array();
   var noElevation = 998877.000;
   $(document).ready(function() {
+
+    // when the site dropdown changes, update the parameters.
     $("#siteSelect").change(function() {
       $("#parameterSelect").empty();
       for (var i = 0; i < ARCFILDMP.length; i++) {
@@ -22,6 +24,29 @@
         }
       }
     });
+
+    $("#parameterSelect").change(function() {
+      $dropdown = $(this);
+      $sites = $("#siteSelect");
+      selectedParam = $dropdown.val();
+
+
+      validSites = _.filter(ARCFILDMP, function(site) {
+        if (_.contains(site.parameters, selectedParam)) {
+          return site;
+        }
+      });
+
+      $sites.empty();
+      
+      _.each(validSites, function(element, index) {
+        option = $('<option>').val(element.site)
+          .text(element.name) ;
+        $sites.append(option);
+      });
+
+    });
+
     $("button").click(function() {
       myurl = 'http://www.usbr.gov/gp-bin/arcread.pl?jsonp=?';
       mysite = $("#siteSelect").val();
