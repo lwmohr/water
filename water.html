@@ -11,6 +11,7 @@
 		<script src="./js/jquery-1.8.2.js"></script>
 		<script src="./js/jquery-ui-1.9.0.custom.js"></script>
 		<script src="./js/d3.v2.js"></script>
+		<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js"></script>
 		<!--
 		<script src="http://code.jquery.com/jquery-latest.js"></script>
 		<script type='text/javascript' src='../plugins/savingsestimator/js/underscore.js'></script>
@@ -26,17 +27,17 @@
 					for (var i = 0; i < ARCFILDMP.length; i++) {
 						if (ARCFILDMP[i].site == $("#siteSelect").val()) {
 							for (var j = 0; j < ARCFILDMP[i].parameters.length; j++) {
-								console.log('Handler for .change() called.');
-								for (var k = 0; k < paramsLKP.length; k++) {
-									if (ARCFILDMP[i].parameters[j] == paramsLKP[k].code) {
-										console.log(ARCFILDMP[i].parameters[j] + "==" + paramsLKP[k].code);
-										var element = document.getElementById("parameterSelect");
-										var parameterString = paramsLKP[j].code + "--" + paramsLKP[j].name;
-										var parameterOption = new Option(parameterString, paramsLKP[j].code);
 
-										element.appendChild(parameterOption);
-									}
-								}
+                param = _.where(paramsLKP, {
+                  code: ARCFILDMP[i].parameters[j]  
+                })[0];
+
+
+                element = $("#parameterSelect");
+                parameterString = param.code + "--" + param.name;
+                parameterOption = new Option(parameterString, param.code);
+                console.log("! " + parameterString + ", " + param.code);
+                element.append(parameterOption);
 							}
 						}
 					}
