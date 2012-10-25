@@ -35,6 +35,7 @@
         ed : "3",
         pa : "FB"
       }, function(data) {
+        elevationArray = new Array();
         //	console.log(data);
         for (var i = 0; i < data.SITE.DATA.length; i++) {
           var elevation = parseFloat(data.SITE.DATA[i].FB);
