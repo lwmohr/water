@@ -6,83 +6,13 @@
 		<!--		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jquery/1.8.0/jquery.min.js'></script>
 		<script type='text/javascript' src='http://ajax.googleapis.com/ajax/libs/jqueryui/1.8.23/jquery-ui.min.js'></script>
 		-->
-		<script src="./js/ARCFILDMP.js"></script>
-		<script src="./js/paramsLookup.js"></script>
-		<script src="./js/jquery-1.8.2.js"></script>
-		<script src="./js/jquery-ui-1.9.0.custom.js"></script>
-		<script src="./js/d3.v2.js"></script>
+		<script src="js/ARCFILDMP.js"></script>
+		<script src="js/paramsLookup.js"></script>
+		<script src="js/jquery-1.8.2.js"></script>
+		<script src="js/jquery-ui-1.9.0.custom.js"></script>
+		<script src="js/d3.v2.js"></script>
+		<script src="js/water.js"></script>
 		<script src="http://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.4.2/underscore-min.js"></script>
-		<!--
-		<script src="http://code.jquery.com/jquery-latest.js"></script>
-		<script type='text/javascript' src='../plugins/savingsestimator/js/underscore.js'></script>
-		<script type='text/javascript' src='../plugins/savingsestimator/js/backbone.js'></script>
-		-->
-		<script>
-			var mysite = "AGR";
-			var elevationArray = new Array();
-			var noElevation = 998877.000;
-			$(document).ready(function() {
-				$("#siteSelect").change(function() {
-					$("#parameterSelect").empty();
-					for (var i = 0; i < ARCFILDMP.length; i++) {
-						if (ARCFILDMP[i].site == $("#siteSelect").val()) {
-							for (var j = 0; j < ARCFILDMP[i].parameters.length; j++) {
-
-                param = _.where(paramsLKP, {
-                  code: ARCFILDMP[i].parameters[j]  
-                })[0];
-
-
-                element = $("#parameterSelect");
-                parameterString = param.code + "--" + param.name;
-                parameterOption = new Option(parameterString, param.code);
-                console.log("! " + parameterString + ", " + param.code);
-                element.append(parameterOption);
-							}
-						}
-					}
-				});
-				//alert("good");
-				$("button").click(function() {
-					myurl = 'http://www.usbr.gov/gp-bin/arcread.pl?jsonp=?';
-					mysite = $("#siteSelect").val();
-					alert(mysite);
-					$.getJSON(myurl, {
-						st : mysite,
-						by : "2010",
-						bm : "1",
-						bd : "1",
-						ey : "2012",
-						em : "11",
-						ed : "3",
-						pa : "FB"
-					}, function(data) {
-						//	console.log(data);
-						for (var i = 0; i < data.SITE.DATA.length; i++) {
-							var elevation = parseFloat(data.SITE.DATA[i].FB);
-							//if( elevation < 2200 ) { alert(JSON.stringify(data.AGR[i])) }
-							if ((elevation != noElevation) && (elevation != 0)) {
-								var day = new Date(Date.parse(data.SITE.DATA[i].DATE));
-								elevationArray.push({
-									"day" : day,
-									"elevation" : elevation
-								});
-							}
-						}
-						//		console.log(elevationArray);
-						//			$("div").html(data.AGR[1].FB);
-						//$("div#thing1").html(JSON.stringify(data));
-						$("#minDate").datepicker({
-							minDate : -20,
-							maxDate : "+1M +10D"
-						});
-						$("div#thing1").html($("#thing3").html());
-						//	$("div#thing2").html(JSON.stringify(elevationArray));
-						//$("div#thing1").html($("#thing3").html());
-					});
-				});
-			});
-		</script>
 		<style>
 			body {
 				font: 10px sans-serif;
@@ -99,10 +29,6 @@
 			}
 
 		</style>
-		<!--
-		<script src="mbostock-d3-44e4620/d3.v2.js"></script>
-		<script src="http://d3js.org/d3.v3.js"></script>
-		-->
 	</head>
 	<body>
 		<div id="selectDiv">
@@ -110,115 +36,15 @@
 				<option value="NONE" selected="selected"> --Select Site-- </option>
 			</select>
 
-			<script>
-				var element = document.getElementById("siteSelect");
-				for (var i = 0; i < ARCFILDMP.length; i++) {
-					var siteString = ARCFILDMP[i].name + " (" + ARCFILDMP[i].site + ")";
-					var siteOption = new Option(siteString, ARCFILDMP[i].site);
-
-					element.appendChild(siteOption);
-					//$("div#thing2").html(JSON.stringify(ARCFILDMP[1]));
-				}
-			</script>
 			<select id="parameterSelect">
 				<option value="NONE" selected="selected"> --Common Parameters-- </option>
 			</select>
-			<script>
-				var element = document.getElementById("parameterSelect");
-				for (var i = 0; i < 32; i++) {
-					var parameterString = paramsLKP[i].code + "--" + paramsLKP[i].name;
-					var parameterOption = new Option(parameterString, paramsLKP[i].code);
-
-					element.appendChild(parameterOption);
-					//$("div#thing2").html(JSON.stringify(ARCFILDMP[1]));
-				}
-			</script>
 		</div>
-		<div id="thing4">
-			<script id="thing3" type="text/html">
-				<script id="thing5">
-					var margin = {
-						top : 20,
-						right : 20,
-						bottom : 30,
-						left : 50
-					}, width = 960 - margin.left - margin.right, height = 500 - margin.top - margin.bottom;
+    <button>
+      graph it
+    </button>
 
-					var parseDate = d3.time.format("%d-%b-%y").parse;
+    <div id="graph"></div>
 
-					var x = d3.time.scale().range([0, width]);
-
-					var y = d3.scale.linear().range([height, 0]);
-
-					var xAxis = d3.svg.axis().scale(x).orient("bottom");
-
-					var yAxis = d3.svg.axis().scale(y).orient("left");
-
-					var area = d3.svg.area().x(function(d) {
-						return x(d.day);
-					}).y0(height).y1(function(d) {
-						return y(d.elevation);
-					});
-
-					var svg = d3.select("body").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
-					//d3.entries(elevationArray)
-					/*
-					d3.tsv("data.tsv", function(error, data) {
-					data.forEach(function(d) {
-					console.log(JSON.stringify(d));
-					d.date = parseDate(d.date);
-					d.close = +d.close;
-					console.log(JSON.stringify(d));
-					});
-
-					function(error, elevationArray) {
-					elevationArray.forEach(function(d) {
-					d.date = parseDate(d.date);
-					d.close = +d.close;
-					});
-					*/
-
-					//  x.domain(d3.extent(data, function(d) { return d.date; }));
-					//  y.domain([0, d3.max(data, function(d) { return d.close; })]);
-					x.domain(d3.extent(elevationArray, function(d) {
-						return d.day;
-					}));
-					y.domain(d3.extent(elevationArray, function(d) {
-						return d.elevation;
-					}));
-
-					svg.append("path").datum(elevationArray).attr("class", "area").attr("d", area);
-
-					svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
-
-					svg.append("g").attr("class", "y axis").call(yAxis).append("text")
-					//      .attr("transform", "rotate(-90)")
-					//  .attr("y", 6)
-					.attr("dy", ".71em").style("text-anchor", "end").text("Price ($)");
-					//}
-					//);
-			</script>
-			</script>
-		</div>
-		<div id="thing10" >
-			<label for="minDate">When are you available this summer?</label>
-			<input type="text" id="minDate" />
-		</div>
-		<div id="thing1" >
-			<p>
-				stuff
-			</p>
-		</div>
-		<div id="thing2">
-			<p>
-				stuff
-			</p>
-
-		</div>
-
-		<button>
-			graph it
-		</button>
 	</body>
 </html>
