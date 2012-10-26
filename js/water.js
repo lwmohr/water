@@ -1,4 +1,3 @@
-var mysite = "AGR";
 var elevationArray = new Array();
 var noElevation = 998877.000;
 $(document).ready(function() {
@@ -6,9 +5,9 @@ $(document).ready(function() {
 	// when the site dropdown changes, update the parameters.
 	$("#siteSelect").change(function() {
 		$dropdown = $(this);
-		console.log($dropdown);
 		$parameters = $("#parameterSelect");
 		selectedSite = $dropdown.val();
+		if($parameters.val() == "NONE"){
 		$dropdown.hide();
 		$("#selectSpan").hide();
 
@@ -24,16 +23,17 @@ $(document).ready(function() {
 		$parameters.empty();
 
 		_.each(validParameters.parameters, function(element, index) {
-			_.each(paramsLKP, function(element2, index2) {
+			_.find(paramsLKP, function(element2) {
 				if (element == element2.code) {
-		            parameterString = element2.code + "--" + element2.name;
-						option = $('<option>').val(element2.code).text(parameterString);
+					parameterString = element2.code + "--" + element2.name;
+					option = $('<option>').val(element2.code).text(parameterString);
 					$parameters.append(option);
+					return true;
 				}
 			});
 		});
 
-	});
+	}});
 
 	$("#parameterSelect").change(function() {
 		$dropdown = $(this);
@@ -48,53 +48,60 @@ $(document).ready(function() {
 			}
 		});
 
-		$("#siteSelectLabel").text(siteString);
+			_.find(paramsLKP, function(element) {
+				if (selectedParam == element.code) {
+					parameterString = element.code + "--" + element.name;
+					return true;
+				}
+			});
+		$("#siteSelectLabel").text(parameterString);
 		$("#siteSelectLabel").show();
 		$sites.empty();
 
 		_.each(validSites, function(element, index) {
-			siteString = site.name + " (" + site.site + ")";
-			option = $('<option>').val(element.site).text(element.name);
+			siteString = element.name + " (" + element.site + ")";
+			option = $('<option>').val(element.site).text(siteString);
 			$sites.append(option);
 		});
 
 	});
 
-	$("button").click(function() {
+	$("#getData").click(function() {
+		elevationArray = new Array();
 		myurl = 'http://www.usbr.gov/gp-bin/arcread.pl?jsonp=?';
 		mysite = $("#siteSelect").val();
+		myparam = $("#parameterSelect").val();
 		$.getJSON(myurl, {
 			st : mysite,
-			by : "2010",
+			by : "2002",
 			bm : "1",
 			bd : "1",
 			ey : "2012",
 			em : "11",
 			ed : "3",
-			pa : "FB"
+			pa : myparam
 		}, function(data) {
-			elevationArray = new Array();
 			//	console.log(data);
 			for (var i = 0; i < data.SITE.DATA.length; i++) {
-				var elevation = parseFloat(data.SITE.DATA[i].FB);
+				elevation = parseFloat(data.SITE.DATA[i].FB);
 				//if( elevation < 2200 ) { alert(JSON.stringify(data.AGR[i])) }
 				if ((elevation != noElevation) && (elevation != 0)) {
-					var day = new Date(Date.parse(data.SITE.DATA[i].DATE));
+					day = new Date(Date.parse(data.SITE.DATA[i].DATE));
 					elevationArray.push({
 						"day" : day,
 						"elevation" : elevation
 					});
 				}
 			}
-			//		console.log(elevationArray);
-			//			$("div").html(data.AGR[1].FB);
-			$("#minDate").datepicker({
-				minDate : -20,
-				maxDate : "+1M +10D"
-			});
-			insertGraph();
 		});
 	});
+	$("#graphIt").click(function() {
+			insertGraph();
+	});
+	$(window).resize(function() {
+         $("#graphIt").trigger('click');
+		 });
+	$("#parameterSelect").trigger('change');
 
 	// load the site dropdown
 	element = document.getElementById("siteSelect");
@@ -123,7 +130,7 @@ $(document).ready(function() {
 			right : 20,
 			bottom : 30,
 			left : 50
-		}, width = 960 - margin.left - margin.right, height = 500 - margin.top - margin.bottom;
+		}, width = $("#graph").width() - margin.left - margin.right, height = $(document).height() - margin.top - margin.bottom - 95;
 
 		var parseDate = d3.time.format("%d-%b-%y").parse;
 
@@ -142,7 +149,7 @@ $(document).ready(function() {
 		});
 
 		var svg = d3.select("#graph").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-
+console.log(elevationArray);
 		x.domain(d3.extent(elevationArray, function(d) {
 			return d.day;
 		}));
@@ -154,7 +161,7 @@ $(document).ready(function() {
 
 		svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
 
-		svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("dy", ".71em").style("text-anchor", "end").text("Price ($)");
+		svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("dy", ".71em").style("text-anchor", "end").text("Elevation");
 	}
 });
 
