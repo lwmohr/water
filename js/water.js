@@ -130,7 +130,7 @@ $(document).ready(function() {
 			right : 20,
 			bottom : 30,
 			left : 50
-		}, width = $("#graph").width() - margin.left - margin.right, height = $(document).height() - margin.top - margin.bottom - 95;
+		}, width = $("#graph").width() - margin.left - margin.right, height = $(document).height() - margin.top - margin.bottom - 105;
 
 		var parseDate = d3.time.format("%d-%b-%y").parse;
 
@@ -161,7 +161,7 @@ console.log(elevationArray);
 
 		svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
 
-		svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("dy", ".71em").style("text-anchor", "end").text("Elevation");
+		svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("dy", ".71em").style("text-anchor", "end").text("Elev.");
 	}
 });
 
