@@ -68,6 +68,35 @@ $(document).ready(function() {
 	});
 
 	$("#getData").click(function() {
+		getData();
+	});
+	$("#graphIt").click(function() {
+		insertGraph();
+	});
+	$(window).resize(function() {
+		$("#graphIt").trigger('click');
+	});
+	$("#parameterSelect").trigger('change');
+	/*
+	 // load the site dropdown
+	 element = document.getElementById("siteSelect");
+	 for (var i = 0; i < ARCFILDMP.length; i++) {
+	 siteString = ARCFILDMP[i].name + " (" + ARCFILDMP[i].site + ")";
+	 siteOption = new Option(siteString, ARCFILDMP[i].site);
+
+	 element.appendChild(siteOption);
+	 }
+
+	 // Load the parameter dropdown
+	 element = document.getElementById("parameterSelect");
+	 for (var i = 0; i < 32; i++) {// only want the top 32, arbitrarily chosen to decrapify the list
+	 parameterString = paramsLKP[i].code + "--" + paramsLKP[i].name;
+	 parameterOption = new Option(parameterString, paramsLKP[i].code);
+
+	 element.appendChild(parameterOption);
+	 }
+	 */
+	getData = function() {
 		elevationArray = new Array();
 		myurl = 'http://www.usbr.gov/gp-bin/arcread.pl?jsonp=?';
 		mysite = $("#siteSelect").val();
@@ -92,40 +121,14 @@ $(document).ready(function() {
 					});
 				}
 			}
-			if(elevationArray.length > 0) {
+			if (elevationArray.length > 0) {
 				$("#noData").hide();
 			} else {
 				$("#noData").show();
 			}
-                
+
 		});
-	});
-	$("#graphIt").click(function() {
-		insertGraph();
-	});
-	$(window).resize(function() {
-		$("#graphIt").trigger('click');
-	});
-	$("#parameterSelect").trigger('change');
-/*
-	// load the site dropdown
-	element = document.getElementById("siteSelect");
-	for (var i = 0; i < ARCFILDMP.length; i++) {
-		siteString = ARCFILDMP[i].name + " (" + ARCFILDMP[i].site + ")";
-		siteOption = new Option(siteString, ARCFILDMP[i].site);
-
-		element.appendChild(siteOption);
 	}
-
-	// Load the parameter dropdown
-	element = document.getElementById("parameterSelect");
-	for (var i = 0; i < 32; i++) {// only want the top 32, arbitrarily chosen to decrapify the list
-		parameterString = paramsLKP[i].code + "--" + paramsLKP[i].name;
-		parameterOption = new Option(parameterString, paramsLKP[i].code);
-
-		element.appendChild(parameterOption);
-	}
-*/
 	// Graph it
 	insertGraph = function() {
 		$("#graph").empty();
