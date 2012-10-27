@@ -57,7 +57,7 @@ $(document).ready(function() {
 		});
 		$("#siteSelectLabel").text(parameterString);
 		$("#siteSelectLabel").show();
-		$sites.empty();
+		$("#siteSelect").empty();
 
 		_.each(validSites, function(element, index) {
 			siteString = element.name + " (" + element.site + ")";
@@ -82,10 +82,8 @@ $(document).ready(function() {
 			ed : "3",
 			pa : myparam
 		}, function(data) {
-			//	console.log(data);
 			for (var i = 0; i < data.SITE.DATA.length; i++) {
 				elevation = parseFloat(data.SITE.DATA[i].FB);
-				//if( elevation < 2200 ) { alert(JSON.stringify(data.AGR[i])) }
 				if ((elevation != noElevation) && (elevation != 0)) {
 					day = new Date(Date.parse(data.SITE.DATA[i].DATE));
 					elevationArray.push({
@@ -109,7 +107,7 @@ $(document).ready(function() {
 		$("#graphIt").trigger('click');
 	});
 	$("#parameterSelect").trigger('change');
-
+/*
 	// load the site dropdown
 	element = document.getElementById("siteSelect");
 	for (var i = 0; i < ARCFILDMP.length; i++) {
@@ -127,7 +125,7 @@ $(document).ready(function() {
 
 		element.appendChild(parameterOption);
 	}
-
+*/
 	// Graph it
 	insertGraph = function() {
 		$("#graph").empty();
