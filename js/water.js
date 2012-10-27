@@ -7,33 +7,34 @@ $(document).ready(function() {
 		$dropdown = $(this);
 		$parameters = $("#parameterSelect");
 		selectedSite = $dropdown.val();
-		if($parameters.val() == "NONE"){
-		$dropdown.hide();
-		$("#selectSpan").hide();
+		if ($parameters.val() == "NONE") {
+			$dropdown.hide();
+			$("#selectSpan").hide();
 
-		validParameters = _.find(ARCFILDMP, function(site) {
-			if (site.site == selectedSite) {
-				siteString = site.name + " (" + site.site + ")";
-				return site;
-			}
-		});
-
-		$("#parameterSelectLabel").text(siteString);
-		$("#parameterSelectLabel").show();
-		$parameters.empty();
-
-		_.each(validParameters.parameters, function(element, index) {
-			_.find(paramsLKP, function(element2) {
-				if (element == element2.code) {
-					parameterString = element2.code + "--" + element2.name;
-					option = $('<option>').val(element2.code).text(parameterString);
-					$parameters.append(option);
-					return true;
+			validParameters = _.find(ARCFILDMP, function(site) {
+				if (site.site == selectedSite) {
+					siteString = site.name + " (" + site.site + ")";
+					return site;
 				}
 			});
-		});
 
-	}});
+			$("#parameterSelectLabel").text(siteString);
+			$("#parameterSelectLabel").show();
+			$parameters.empty();
+
+			_.each(validParameters.parameters, function(element, index) {
+				_.find(paramsLKP, function(element2) {
+					if (element == element2.code) {
+						parameterString = element2.code + "--" + element2.name;
+						option = $('<option>').val(element2.code).text(parameterString);
+						$parameters.append(option);
+						return true;
+					}
+				});
+			});
+
+		}
+	});
 
 	$("#parameterSelect").change(function() {
 		$dropdown = $(this);
@@ -48,12 +49,12 @@ $(document).ready(function() {
 			}
 		});
 
-			_.find(paramsLKP, function(element) {
-				if (selectedParam == element.code) {
-					parameterString = element.code + "--" + element.name;
-					return true;
-				}
-			});
+		_.find(paramsLKP, function(element) {
+			if (selectedParam == element.code) {
+				parameterString = element.code + "--" + element.name;
+				return true;
+			}
+		});
 		$("#siteSelectLabel").text(parameterString);
 		$("#siteSelectLabel").show();
 		$sites.empty();
@@ -93,14 +94,20 @@ $(document).ready(function() {
 					});
 				}
 			}
+			if(elevationArray.length > 0) {
+				$("#noData").hide();
+			} else {
+				$("#noData").show();
+			}
+                
 		});
 	});
 	$("#graphIt").click(function() {
-			insertGraph();
+		insertGraph();
 	});
 	$(window).resize(function() {
-         $("#graphIt").trigger('click');
-		 });
+		$("#graphIt").trigger('click');
+	});
 	$("#parameterSelect").trigger('change');
 
 	// load the site dropdown
@@ -149,7 +156,7 @@ $(document).ready(function() {
 		});
 
 		var svg = d3.select("#graph").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-console.log(elevationArray);
+		console.log(elevationArray);
 		x.domain(d3.extent(elevationArray, function(d) {
 			return d.day;
 		}));

@@ -31,31 +31,47 @@
 		</style>
 	</head>
 	<body>
-	<h3>USBR Hydromet data	www.usbr.gov</h3>
+		<h3>USBR Hydromet data	www.usbr.gov</h3>
 		<div id="selectDiv">
-			<p>	
-			<label for="siteSelect" style="display:none" id="siteSelectLabel">ofcourse</label>
-			<select id="siteSelect">
-				<option value="NONE"> --Select Site-- </option>
-			</select>
-				<span id="selectSpan">
-				OR	
-				</span>
-			<label for="parameterSelect" style="display:none" id="parameterSelectLabel">ofcourse</label>
-			<select id="parameterSelect">
-				<option value="NONE"> --Common Parameters-- </option>
-				<option value="FB" selected="selected"></option>
-			</select>
+			<p>
+				<label for="siteSelect" style="display:none" id="siteSelectLabel">ofcourse</label>
+				<select id="siteSelect">
+					<option value="NONE"> --Select Site-- </option>
+				</select>
+				<span id="selectSpan"> OR </span>
+				<label for="parameterSelect" style="display:none" id="parameterSelectLabel">ofcourse</label>
+				<select id="parameterSelect">
+					<option value="NONE"> --Common Parameters-- </option>
+					<option value="FB" selected="selected"></option>
+				</select>
 			</p>
 		</div>
-    <button id="getData">
-      get data
-    </button>
-    <button id="graphIt">
-      graph it
-    </button>
+		<button id="getData">
+			get data
+		</button>
+		<button id="graphIt">
+			graph it
+		</button>
+		<p id="noData" style="display:none">No Data</p>
 
-    <div id="graph" style="width:100%;height=100%" class="resizable"></div>
-
+		<div id="graph" style="width:100%;height=100%" class="resizable"></div>
+		<!-- Piwik -->
+		<script type="text/javascript">
+			var pkBaseURL = (("https:" == document.location.protocol) ? "https://89ni.net/analytics/" : "http://89ni.net/analytics/");
+			document.write(unescape("%3Cscript src='" + pkBaseURL + "piwik.js' type='text/javascript'%3E%3C/script%3E"));
+		</script>
+		<script type="text/javascript">
+			try {
+				var piwikTracker = Piwik.getTracker(pkBaseURL + "piwik.php", 1);
+				piwikTracker.trackPageView();
+				piwikTracker.enableLinkTracking();
+			} catch( err ) {
+			}
+		</script>
+		<noscript>
+			<p><img src="http://89ni.net/analytics/piwik.php?idsite=1" style="border:0" alt="" />
+			</p>
+		</noscript>
+		<!-- End Piwik Tracking Tag -->
 	</body>
 </html>
