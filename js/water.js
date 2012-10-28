@@ -176,44 +176,5 @@ $(document).ready(function() {
 	 }
 	 */
 	// Graph it
-
-	    $(function() {
-        $( "#slider-range" ).slider({
-            range: true,
-            values: [ 17, 67 ],
-            slide: function( event, ui ) {
-                $( "#amount1" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
-            }
-        });
-        $( "#amount1" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
-            " - $" + $( "#slider-range" ).slider( "values", 1 ) );
-    });
-	    $(function() {
-        var select = $( "#minbeds" );
-        var slider = $( "<div id='slider'></div>" ).insertAfter( select ).slider({
-            min: 1,
-            max: 6,
-            range: "min",
-            value: select[ 0 ].selectedIndex + 1,
-            slide: function( event, ui ) {
-                select[ 0 ].selectedIndex = ui.value - 1;
-            }
-        });
-        $( "#minbeds" ).change(function() {
-            slider.slider( "value", this.selectedIndex + 1 );
-        });
-    });
-	    $(function() {
-        $( "#slider" ).slider({
-            value:100,
-            min: 0,
-            max: 500,
-            step: 50,
-            slide: function( event, ui ) {
-                $( "#amount" ).val( "$" + ui.value );
-            }
-        });
-        $( "#amount" ).val( "$" + $( "#slider" ).slider( "value" ) );
-    });
 });
 
