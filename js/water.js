@@ -7,7 +7,7 @@ var noElevation = 998877.000;
 		myparam = $("#parameterSelect").val();
 		$.getJSON(myurl, {
 			st : mysite,
-			by : "2002",
+			by : "1940",
 			bm : "1",
 			bd : "1",
 			ey : "2012",
@@ -63,7 +63,6 @@ var noElevation = 998877.000;
 		});
 
 		var svg = d3.select("#graph").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-		console.log(elevationArray);
 		x.domain(d3.extent(elevationArray, function(d) {
 			return d.day;
 		}));
@@ -177,5 +176,44 @@ $(document).ready(function() {
 	 }
 	 */
 	// Graph it
+
+	    $(function() {
+        $( "#slider-range" ).slider({
+            range: true,
+            values: [ 17, 67 ],
+            slide: function( event, ui ) {
+                $( "#amount1" ).val( "$" + ui.values[ 0 ] + " - $" + ui.values[ 1 ] );
+            }
+        });
+        $( "#amount1" ).val( "$" + $( "#slider-range" ).slider( "values", 0 ) +
+            " - $" + $( "#slider-range" ).slider( "values", 1 ) );
+    });
+	    $(function() {
+        var select = $( "#minbeds" );
+        var slider = $( "<div id='slider'></div>" ).insertAfter( select ).slider({
+            min: 1,
+            max: 6,
+            range: "min",
+            value: select[ 0 ].selectedIndex + 1,
+            slide: function( event, ui ) {
+                select[ 0 ].selectedIndex = ui.value - 1;
+            }
+        });
+        $( "#minbeds" ).change(function() {
+            slider.slider( "value", this.selectedIndex + 1 );
+        });
+    });
+	    $(function() {
+        $( "#slider" ).slider({
+            value:100,
+            min: 0,
+            max: 500,
+            step: 50,
+            slide: function( event, ui ) {
+                $( "#amount" ).val( "$" + ui.value );
+            }
+        });
+        $( "#amount" ).val( "$" + $( "#slider" ).slider( "value" ) );
+    });
 });
 
