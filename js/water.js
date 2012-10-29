@@ -1,4 +1,5 @@
 var elevationArray = new Array();
+var minDate, maxDate, maxDays;
 var noElevation = 998877.000;
 getData = function() {
 	elevationArray = new Array();
@@ -30,6 +31,9 @@ getData = function() {
 		} else {
 			$("#noData").show();
 		}
+		minDate = elevationArray[0].day;
+		maxDate = elevationArray[elevationArray.length - 1].day;
+		maxDays = Math.floor((maxDate.getTime() - minDate.getTime()) / 86400000);
 		showDateSlider();
 		insertGraph();
 
@@ -38,19 +42,26 @@ getData = function() {
 showDateSlider = function() {
 
 	$(function() {
+		console.log(minDate);
+		console.log(maxDate);
 		$("#slider-range").slider({
 			range : true,
-			min : elevationArray[0].day.getTime(),
-			max : elevationArray[elevationArray.length - 1].day.getTime(),
-			values : [elevationArray[0].day.getTime(), elevationArray[elevationArray.length - 1].day.getTime()],
+			//min : elevationArray[0].day.getTime(),
+			max : maxDays,
+			values : [0, maxDays],
 			slide : function(event, ui) {
-				$("#amount").val(Date.parse(ui.values[0]) + " - " + Date.parse(ui.values[1]));
+				$("#dateRange").val(addToMinDate(ui.values[0]) + " - " + addToMinDate(ui.values[1]));
 			}
 		});
-		$("#amount").val($("#slider-range").slider("values", 0) + " - " + $("#slider-range").slider("values", 1));
+		$("#dateRange").val(addToMinDate($("#slider-range").slider("values", 0)) + " - " + addToMinDate($("#slider-range").slider("values", 1)));
 	});
 	$("#dateSliderDiv").show();
 
+}
+addToMinDate = function(daysToAdd) {
+	slideDate = new Date(minDate);
+	slideDate.setDate(slideDate.getDate() + daysToAdd);
+	return $.datepicker.formatDate('M d, yy', slideDate);
 }
 insertGraph = function() {
 	$("#graph").empty();
@@ -65,11 +76,9 @@ insertGraph = function() {
 	var parseDate = d3.time.format("%d-%b-%y").parse;
 
 	var x = d3.time.scale().range([0, width]);
-
 	var y = d3.scale.linear().range([height, 0]);
 
 	var xAxis = d3.svg.axis().scale(x).orient("bottom");
-
 	var yAxis = d3.svg.axis().scale(y).orient("left");
 
 	var area = d3.svg.area().x(function(d) {
@@ -87,9 +96,7 @@ insertGraph = function() {
 	}));
 
 	svg.append("path").datum(elevationArray).attr("class", "area").attr("d", area);
-
 	svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
-
 	svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("dy", ".71em").style("text-anchor", "end").text("Elev.");
 }
 
@@ -168,7 +175,7 @@ $(document).ready(function() {
 		insertGraph();
 	});
 	$(window).resize(function() {
-		$("#graphIt").trigger('click');
+		insertGraph();
 	});
 	$("#parameterSelect").trigger('change');
 
