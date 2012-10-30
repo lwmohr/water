@@ -1,4 +1,5 @@
 var elevationArray = new Array();
+var elevationArrayGraph = new Array();
 var minDate, maxDate, maxDays, minDateGraph, maxDateGraph;
 var noElevation = 998877.000;
 getData = function() {
@@ -36,6 +37,7 @@ getData = function() {
 		maxDays = Math.floor((maxDate.getTime() - minDate.getTime()) / 86400000);
 		minDateGraph = minDate;
 		maxDateGraph = maxDate;
+		elevationArrayGraph = elevationArray.slice(0);
 		showDateSlider();
 		insertGraph();
 
@@ -53,6 +55,11 @@ showDateSlider = function() {
 			values : [0, maxDays],
 			slide : function(event, ui) {
 				$("#dateRange").val(addToMinDate(ui.values[0]) + " - " + addToMinDate(ui.values[1]));
+	minDateGraph = new Date(minDate);
+	maxDateGraph = new Date(minDate);
+				minDateGraph.setDate(minDateGraph.getDate() + ui.values[0]);
+				maxDateGraph.setDate(maxDateGraph.getDate() + ui.values[1]);
+				$("#dateRange").trigger('change');
 			}
 		});
 		$("#dateRange").val(addToMinDate($("#slider-range").slider("values", 0)) + " - " + addToMinDate($("#slider-range").slider("values", 1)));
@@ -90,14 +97,14 @@ insertGraph = function() {
 	});
 
 	var svg = d3.select("#graph").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	x.domain(d3.extent(elevationArray, function(d) {
+	x.domain(d3.extent(elevationArrayGraph, function(d) {
 		return d.day;
 	}));
-	y.domain(d3.extent(elevationArray, function(d) {
+	y.domain(d3.extent(elevationArrayGraph, function(d) {
 		return d.elevation;
 	}));
 
-	svg.append("path").datum(elevationArray).attr("class", "area").attr("d", area);
+	svg.append("path").datum(elevationArrayGraph).attr("class", "area").attr("d", area);
 	svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
 	svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("dy", ".71em").style("text-anchor", "end").text("Elev.");
 }
@@ -177,6 +184,17 @@ $(document).ready(function() {
 		insertGraph();
 	});
 	$(window).resize(function() {
+		insertGraph();
+	});
+	$("#dateRange").change(function() {
+		elevationArrayGraph = new Array();
+		elevationArrayGraph = _.filter(elevationArray, function(arr) {
+			if(arr.day >= minDateGraph && arr.day <= maxDateGraph) {
+				console.log(maxDateGraph);
+				return arr;
+			}
+		});
+
 		insertGraph();
 	});
 	$("#parameterSelect").trigger('change');
