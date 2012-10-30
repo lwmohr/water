@@ -1,5 +1,5 @@
 var elevationArray = new Array();
-var minDate, maxDate, maxDays;
+var minDate, maxDate, maxDays, minDateGraph, maxDateGraph;
 var noElevation = 998877.000;
 getData = function() {
 	elevationArray = new Array();
@@ -34,6 +34,8 @@ getData = function() {
 		minDate = elevationArray[0].day;
 		maxDate = elevationArray[elevationArray.length - 1].day;
 		maxDays = Math.floor((maxDate.getTime() - minDate.getTime()) / 86400000);
+		minDateGraph = minDate;
+		maxDateGraph = maxDate;
 		showDateSlider();
 		insertGraph();
 
