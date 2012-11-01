@@ -19,8 +19,8 @@ getData = function() {
 	}, function(data) {
 		for (var i = 0; i < data.SITE.DATA.length; i++) {
 			elevation = parseFloat(data.SITE.DATA[i].FB);
-			if ((elevation != noElevation) && (elevation > 0)) {
 				day = new Date(Date.parse(data.SITE.DATA[i].DATE));
+			if ((elevation != noElevation) && (elevation > 0)) {
 				elevationArray.push({
 					"day" : day,
 					"elevation" : elevation
@@ -46,8 +46,6 @@ getData = function() {
 showDateSlider = function() {
 
 	$(function() {
-		console.log(minDate);
-		console.log(maxDate);
 		$("#slider-range").slider({
 			range : true,
 			//min : elevationArray[0].day.getTime(),
@@ -55,11 +53,11 @@ showDateSlider = function() {
 			values : [0, maxDays],
 			slide : function(event, ui) {
 				$("#dateRange").val(addToMinDate(ui.values[0]) + " - " + addToMinDate(ui.values[1]));
-	minDateGraph = new Date(minDate);
-	maxDateGraph = new Date(minDate);
+				minDateGraph = new Date(minDate);
+				maxDateGraph = new Date(minDate);
 				minDateGraph.setDate(minDateGraph.getDate() + ui.values[0]);
 				maxDateGraph.setDate(maxDateGraph.getDate() + ui.values[1]);
-				$("#dateRange").trigger('change');
+				updateRange(insertGraph);
 			}
 		});
 		$("#dateRange").val(addToMinDate($("#slider-range").slider("values", 0)) + " - " + addToMinDate($("#slider-range").slider("values", 1)));
@@ -72,6 +70,16 @@ addToMinDate = function(daysToAdd) {
 	slideDate.setDate(slideDate.getDate() + daysToAdd);
 	return $.datepicker.formatDate('M d, yy', slideDate);
 }
+updateRange = function(callback) {
+		elevationArrayGraph = new Array();
+		elevationArrayGraph = _.filter(elevationArray, function(arr) {
+			if (arr.day >= minDateGraph && arr.day <= maxDateGraph) {
+				return arr;
+			}
+		});
+
+		callback();
+	}
 insertGraph = function() {
 	$("#graph").empty();
 
@@ -80,7 +88,7 @@ insertGraph = function() {
 		right : 20,
 		bottom : 30,
 		left : 50
-	}, width = $("#graph").width() - margin.left - margin.right, height = $(document).height() - margin.top - margin.bottom - 105;
+	}, width = $("#graph").width() - margin.left - margin.right, height = $(document).height() - margin.top - margin.bottom - 125;
 
 	var parseDate = d3.time.format("%d-%b-%y").parse;
 
@@ -97,14 +105,16 @@ insertGraph = function() {
 	});
 
 	var svg = d3.select("#graph").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	x.domain(d3.extent(elevationArrayGraph, function(d) {
+	x.domain(d3.extent(elevationArray, function(d) {
+		if(d.day >= minDateGraph && d.day <= maxDateGraph) {
 		return d.day;
+	}
 	}));
-	y.domain(d3.extent(elevationArrayGraph, function(d) {
+	y.domain(d3.extent(elevationArray, function(d) {
 		return d.elevation;
 	}));
 
-	svg.append("path").datum(elevationArrayGraph).attr("class", "area").attr("d", area);
+	svg.append("path").datum(elevationArray).attr("class", "area").attr("d", area);
 	svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
 	svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("dy", ".71em").style("text-anchor", "end").text("Elev.");
 }
@@ -169,6 +179,9 @@ $(document).ready(function() {
 		$("#siteSelectLabel").show();
 		$("#siteSelect").empty();
 
+			option = $('<option>').val("NONE").text("--Select Site--");
+			$sites.append(option);
+
 		_.each(validSites, function(element, index) {
 			siteString = element.name + " (" + element.site + ")";
 			option = $('<option>').val(element.site).text(siteString);
@@ -184,17 +197,6 @@ $(document).ready(function() {
 		insertGraph();
 	});
 	$(window).resize(function() {
-		insertGraph();
-	});
-	$("#dateRange").change(function() {
-		elevationArrayGraph = new Array();
-		elevationArrayGraph = _.filter(elevationArray, function(arr) {
-			if(arr.day >= minDateGraph && arr.day <= maxDateGraph) {
-				console.log(maxDateGraph);
-				return arr;
-			}
-		});
-
 		insertGraph();
 	});
 	$("#parameterSelect").trigger('change');
