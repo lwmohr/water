@@ -2,6 +2,8 @@ var elevationArray = new Array();
 var elevationArrayGraph = new Array();
 var minDate, maxDate, maxDays, minDateGraph, maxDateGraph;
 var noElevation = 998877.000;
+
+// go get the data
 getData = function() {
 	elevationArray = new Array();
 	myurl = 'http://www.usbr.gov/gp-bin/arcread.pl?jsonp=?';
@@ -45,6 +47,8 @@ getData = function() {
 
 	});
 }
+
+//set up the date slider
 showDateSlider = function() {
 
 	$(function() {
@@ -67,11 +71,15 @@ showDateSlider = function() {
 	$("#dateSliderDiv").show();
 
 }
+
+//calculate date from slider value
 addToMinDate = function(daysToAdd) {
 	slideDate = new Date(minDate);
 	slideDate.setDate(slideDate.getDate() + daysToAdd);
 	return $.datepicker.formatDate('M d, yy', slideDate);
-}
+}w
+
+// callback messings
 updateRange = function(callback) {
 		elevationArrayGraph = new Array();
 		elevationArrayGraph = _.filter(elevationArray, function(arr) {
@@ -82,6 +90,8 @@ updateRange = function(callback) {
 
 		callback();
 	}
+
+	// create and append svg graph
 insertGraph = function() {
 	$("#graph").empty();
 
@@ -158,6 +168,7 @@ $(document).ready(function() {
 		getData();
 	});
 
+	// when the parameter dropdown changes, update the sites.
 	$("#parameterSelect").change(function() {
 		$dropdown = $(this);
 		$sites = $("#siteSelect");
@@ -192,36 +203,10 @@ $(document).ready(function() {
 
 	});
 
-	$("#getData").click(function() {
-		getData();
-	});
-	$("#graphIt").click(function() {
-		insertGraph();
-	});
 	$(window).resize(function() {
 		insertGraph();
 	});
 	$("#parameterSelect").trigger('change');
 
-	/*
-	// load the site dropdown
-	element = document.getElementById("siteSelect");
-	for (var i = 0; i < ARCFILDMP.length; i++) {
-	siteString = ARCFILDMP[i].name + " (" + ARCFILDMP[i].site + ")";
-	siteOption = new Option(siteString, ARCFILDMP[i].site);
-
-	element.appendChild(siteOption);
-	}
-
-	// Load the parameter dropdown
-	element = document.getElementById("parameterSelect");
-	for (var i = 0; i < 32; i++) {// only want the top 32, arbitrarily chosen to decrapify the list
-	parameterString = paramsLKP[i].code + "--" + paramsLKP[i].name;
-	parameterOption = new Option(parameterString, paramsLKP[i].code);
-
-	element.appendChild(parameterOption);
-	}
-	*/
-	// Graph it
 });
 
