@@ -13,7 +13,7 @@ getData = function() {
 	$("#inprogress").show();
 	$.getJSON(myurl, {
 		"st" : mysite,
-		"by" : "1940",
+		"by" : "1940",  // get earliest year
 		"bm" : "1",
 		"bd" : "1",
 		"ey" : currentDate.getFullYear(),
@@ -21,8 +21,11 @@ getData = function() {
 		"ed" : currentDate.getDate(),
 		"pa" : myparam
 	}, function(data) {
+    keys = _.keys(data.SITE.DATA[0]);  // Date, FB? LZ?
+    key = keys[1];
+
 		for (var i = 0; i < data.SITE.DATA.length; i++) {
-			elevation = parseFloat(data.SITE.DATA[i].FB);
+			elevation = parseFloat(data.SITE.DATA[i][key]);
 			if ((elevation != noElevation) && (elevation > 0)) {
 				day = new Date(Date.parse(data.SITE.DATA[i].DATE));
 				elevationArray.push({
