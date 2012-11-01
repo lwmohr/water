@@ -82,6 +82,20 @@ addToMinDate = function(daysToAdd) {
 }
 // callback messings
 updateRange = function(callback) {
+  //started = new Date();
+  /*
+  dates = _.pluck(elevationArray, 'day');
+  dates.push(minDateGraph);
+  dates.push(maxDateGraph);
+  // a list of unique, sorted dates, guaranteed to contain your max and min dates
+  dates = _.uniq(_.sortBy(dates, function(dt) { return dt; }), true);
+
+  minIndex = _.indexOf(dates, minDateGraph, true);
+  maxIndex = _.indexOf(dates, maxDateGraph, true);
+
+  elevationArrayGraph = elevationArray.slice(minIndex, maxIndex);
+
+  */
 	elevationArrayGraph = new Array();
 	elevationArrayGraph = _.filter(elevationArray, function(arr) {
 		if (arr.day >= minDateGraph && arr.day <= maxDateGraph) {
@@ -89,6 +103,9 @@ updateRange = function(callback) {
 		}
 	});
 
+  // ended = new Date();
+  // elapsed = ended - started;
+  // console.log("Elapsed " + elapsed + " ms");
 	callback();
 }
 // create and append svg graph
@@ -169,7 +186,6 @@ $(document).ready(function() {
 	// when the parameter dropdown changes, update the sites.
 	$("#parameterSelect").change(function() {
 		$dropdown = $(this);
-		$sites = $("#siteSelect");
 		selectedParam = $dropdown.val();
 		$dropdown.hide();
 		$("#selectSpan").hide();
@@ -188,8 +204,7 @@ $(document).ready(function() {
 		});
 		$("#siteSelectLabel").text(parameterString);
 		$("#siteSelectLabel").show();
-		$("#siteSelect").empty();
-
+		$sites = $("#siteSelect").empty();
 		option = $('<option>').val("NONE").text("--Select Site--");
 		$sites.append(option);
 
