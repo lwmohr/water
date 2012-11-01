@@ -103,6 +103,7 @@ updateRange = function(callback) {
 		}
 	});
 
+  // ..
   // ended = new Date();
   // elapsed = ended - started;
   // console.log("Elapsed " + elapsed + " ms");
