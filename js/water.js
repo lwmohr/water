@@ -7,6 +7,7 @@ getData = function() {
 	myurl = 'http://www.usbr.gov/gp-bin/arcread.pl?jsonp=?';
 	mysite = $("#siteSelect").val();
 	myparam = $("#parameterSelect").val();
+	$("#inprogress").show();
 	$.getJSON(myurl, {
 		st : mysite,
 		by : "1940",
@@ -38,6 +39,7 @@ getData = function() {
 		minDateGraph = minDate;
 		maxDateGraph = maxDate;
 		elevationArrayGraph = elevationArray.slice(0);
+	$("#inprogress").hide();
 		showDateSlider();
 		insertGraph();
 
