@@ -1,6 +1,7 @@
 var elevationArray = new Array();
 var elevationArrayGraph = new Array();
 var minDate, maxDate, maxDays, minDateGraph, maxDateGraph;
+var currentDate = new Date();
 var noElevation = 998877.000;
 
 // go get the data
@@ -11,19 +12,19 @@ getData = function() {
 	myparam = $("#parameterSelect").val();
 	$("#inprogress").show();
 	$.getJSON(myurl, {
-		st : mysite,
-		by : "1940",
-		bm : "1",
-		bd : "1",
-		ey : "2012",
-		em : "11",
-		ed : "3",
-		pa : myparam
+		"st" : mysite,
+		"by" : "1940",
+		"bm" : "1",
+		"bd" : "1",
+		"ey" : currentDate.getFullYear(),
+		"em" : currentDate.getMonth() + 1,
+		"ed" : currentDate.getDate(),
+		"pa" : myparam
 	}, function(data) {
 		for (var i = 0; i < data.SITE.DATA.length; i++) {
 			elevation = parseFloat(data.SITE.DATA[i].FB);
-				day = new Date(Date.parse(data.SITE.DATA[i].DATE));
 			if ((elevation != noElevation) && (elevation > 0)) {
+				day = new Date(Date.parse(data.SITE.DATA[i].DATE));
 				elevationArray.push({
 					"day" : day,
 					"elevation" : elevation
@@ -41,13 +42,12 @@ getData = function() {
 		minDateGraph = minDate;
 		maxDateGraph = maxDate;
 		elevationArrayGraph = elevationArray.slice(0);
-	$("#inprogress").hide();
+		$("#inprogress").hide();
 		showDateSlider();
 		insertGraph();
 
 	});
 }
-
 //set up the date slider
 showDateSlider = function() {
 
@@ -71,27 +71,24 @@ showDateSlider = function() {
 	$("#dateSliderDiv").show();
 
 }
-
 //calculate date from slider value
 addToMinDate = function(daysToAdd) {
 	slideDate = new Date(minDate);
 	slideDate.setDate(slideDate.getDate() + daysToAdd);
 	return $.datepicker.formatDate('M d, yy', slideDate);
-}w
-
+}
 // callback messings
 updateRange = function(callback) {
-		elevationArrayGraph = new Array();
-		elevationArrayGraph = _.filter(elevationArray, function(arr) {
-			if (arr.day >= minDateGraph && arr.day <= maxDateGraph) {
-				return arr;
-			}
-		});
+	elevationArrayGraph = new Array();
+	elevationArrayGraph = _.filter(elevationArray, function(arr) {
+		if (arr.day >= minDateGraph && arr.day <= maxDateGraph) {
+			return arr;
+		}
+	});
 
-		callback();
-	}
-
-	// create and append svg graph
+	callback();
+}
+// create and append svg graph
 insertGraph = function() {
 	$("#graph").empty();
 
@@ -117,16 +114,14 @@ insertGraph = function() {
 	});
 
 	var svg = d3.select("#graph").append("svg").attr("width", width + margin.left + margin.right).attr("height", height + margin.top + margin.bottom).append("g").attr("transform", "translate(" + margin.left + "," + margin.top + ")");
-	x.domain(d3.extent(elevationArray, function(d) {
-		if(d.day >= minDateGraph && d.day <= maxDateGraph) {
+	x.domain(d3.extent(elevationArrayGraph, function(d) {
 		return d.day;
-	}
 	}));
-	y.domain(d3.extent(elevationArray, function(d) {
+	y.domain(d3.extent(elevationArrayGraph, function(d) {
 		return d.elevation;
 	}));
 
-	svg.append("path").datum(elevationArray).attr("class", "area").attr("d", area);
+	svg.append("path").datum(elevationArrayGraph).attr("class", "area").attr("d", area);
 	svg.append("g").attr("class", "x axis").attr("transform", "translate(0," + height + ")").call(xAxis);
 	svg.append("g").attr("class", "y axis").call(yAxis).append("text").attr("dy", ".71em").style("text-anchor", "end").text("Elev.");
 }
@@ -192,8 +187,8 @@ $(document).ready(function() {
 		$("#siteSelectLabel").show();
 		$("#siteSelect").empty();
 
-			option = $('<option>').val("NONE").text("--Select Site--");
-			$sites.append(option);
+		option = $('<option>').val("NONE").text("--Select Site--");
+		$sites.append(option);
 
 		_.each(validSites, function(element, index) {
 			siteString = element.name + " (" + element.site + ")";
