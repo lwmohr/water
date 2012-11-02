@@ -1,6 +1,0 @@
-To install the themes copy the files to ~/.vim/colors.
-
-- getafe.vim
-- ir_black.vim
-- pauls_ir_black.vim
-- paulsgetafe.vim
