@@ -1,5 +1,6 @@
 body {
   margin: 20px;
+  font: 10pt Arial, sans-serif;
 }
 
 .axis path, .axis line {

@@ -3,6 +3,7 @@ var elevationArrayGraph = new Array();
 var minDate, maxDate, maxDays, minDateGraph, maxDateGraph;
 var currentDate = new Date();
 var noElevation = 998877.000;
+var svgSupport = (window.SVGSVGElement) ? true : false;
 
 // go get the data
 getData = function() {
@@ -149,6 +150,10 @@ insertGraph = function() {
 
 $(document).ready(function() {
 
+	if (!svgSupport) {
+	$("div").hide();
+	$("#svgNotSupported").show();
+	}
 	// when the site dropdown changes, update the parameters.
 	$("#siteSelect").change(function() {
 		$dropdown = $(this);
